@@ -15,10 +15,10 @@
  You only need to complete this method.
 """
 
-import Node
+from Node import Node
 
 
-def InsertNth(head, data, position):
+def insert_nth(head, data, position):
     if position == 0:
         return Node(data, head)
 

@@ -47,8 +47,6 @@ class Node(object):
 
 """
 
-from . import Node
-
 
 def print_list(head):
     if head:
