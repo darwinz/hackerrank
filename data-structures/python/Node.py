@@ -7,7 +7,7 @@ class Node(object):
         return self.data
 
     def get_next(self):
-        return self.next_node
+        return self.next
 
     def set_next(self, new_next):
-        self.next_node = new_next
+        self.next = new_next
