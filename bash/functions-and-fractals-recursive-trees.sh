@@ -83,117 +83,56 @@
 #_________________________________________________1__________________________________________________
 
 #!/usr/bin/env bash
-read N
+declare -A matrix
+num_rows=63
+num_columns=100
 
-MAX_N=5
-BLANK_N=$((MAX_N - N))
+declare -a roots
+roots[0]=50
 
-COLS=100
-ROWS=63
-LEAFS_NUMBER=1
-
-LINE_BREAK=$'\\n'
-BRANCH="1"
-BLANK="_"
-
-draw_sub_tree ()
-{
-    local SUB_TREE_HEIGHT=$1
-    local ROOTS_NUMBER=$2
-    local ROW_INDEX=${SUB_TREE_HEIGHT}
-    local SUB_TREE=""
-
-    while [ ${ROW_INDEX} -gt 0 ]
-    do
-        SUB_TREE="${SUB_TREE}$(draw_line ${SUB_TREE_HEIGHT} ${ROW_INDEX} ${ROOTS_NUMBER})"
-        ROW_INDEX=$((ROW_INDEX - 1))
+for ((i=1;i<=num_rows;i++)) do
+    for ((j=1;j<=num_columns;j++)) do
+        matrix[$i,$j]='_'
     done
-
-    echo "$SUB_TREE"
-}
-
-draw_line ()
-{
-    #1. Evaluate all parameters
-
-    local SUB_TREE_HEIGHT=$1
-    local ROW_INDEX=$2
-    local ROOTS_NUMBER=$3
-    local LEAFS_NUMBER=${ROOTS_NUMBER}
-    local LINE=""
-
-    [ ${ROW_INDEX} -gt $((SUB_TREE_HEIGHT / 2)) ]
-    local IS_LEAF_PART=$?
-
-    local LEFT_SIDE_LENGTH=0
-    local RIGHT_SIDE_LENGTH=0
-    local BETWEEN_LEAFS_LENGTH=0
-    local BETWEEN_ROOTS_LENGTH=0
-
-    # Leafs part of tree
-    if [ ${IS_LEAF_PART} -eq 0 ]; then
-        LEAFS_NUMBER=$((ROOTS_NUMBER * 2))
-        BETWEEN_LEAFS_LENGTH=$(( (ROW_INDEX - SUB_TREE_HEIGHT / 2) * 2 - 1 ))
-
-        if [ ${ROOTS_NUMBER} -eq 1 ]; then
-            BETWEEN_ROOTS_LENGTH=0
-        else
-            BETWEEN_ROOTS_LENGTH=$(( (SUB_TREE_HEIGHT * 2) - 1 - (BETWEEN_LEAFS_LENGTH + 1) ))
-        fi
-
-        LEFT_SIDE_LENGTH=$(( (COLS - LEAFS_NUMBER - (BETWEEN_LEAFS_LENGTH * (LEAFS_NUMBER / 2)) - (BETWEEN_ROOTS_LENGTH * (ROOTS_NUMBER - 1)) ) / 2 ))
-    # Root part of tree
-    else
-        if [ ${ROOTS_NUMBER} -eq 1 ]; then
-            BETWEEN_ROOTS_LENGTH=0
-        else
-            BETWEEN_ROOTS_LENGTH=$(( (SUB_TREE_HEIGHT * 2) - 1 ))
-        fi
-
-        BETWEEN_LEAFS_LENGTH=0
-        LEFT_SIDE_LENGTH=$(( (COLS - ROOTS_NUMBER - (BETWEEN_ROOTS_LENGTH * (ROOTS_NUMBER - 1)) ) / 2 ))
-    fi
-
-    RIGHT_SIDE_LENGTH=$((LEFT_SIDE_LENGTH + 1))
-
-    #2. Build sub tree
-    LINE="${LINE}$(for ((i=0; i<$LEFT_SIDE_LENGTH; i++)); do echo -n ${BLANK}; done)"
-
-    for ((i=0; i<${LEAFS_NUMBER}; i++))
-    do
-        LINE="${LINE}${BRANCH}"
-
-        if [ ${i} -eq $((LEAFS_NUMBER - 1)) ]; then
-            break
-        elif [ $(($i % 2)) -eq 0 ] && [ ${IS_LEAF_PART} -eq 0 ]; then
-            LINE="${LINE}$(for ((i=0; i<$BETWEEN_LEAFS_LENGTH; i++)); do echo -n ${BLANK}; done)"
-        else
-            LINE="${LINE}$(for ((i=0; i<$BETWEEN_ROOTS_LENGTH; i++)); do echo -n ${BLANK}; done)"
-        fi
-    done
-
-    LINE="${LINE}$(for ((i=0; i<$RIGHT_SIDE_LENGTH; i++)); do echo -n ${BLANK}; done)"
-    echo "${LINE}${LINE_BREAK}"
-}
-
-while [ ${N} -gt 0  ]
-do
-    ROWS=$((ROWS / 2))
-    TREE="$(draw_sub_tree ${ROWS} ${LEAFS_NUMBER})${TREE}"
-    LEAFS_NUMBER=$((LEAFS_NUMBER * 2))
-    N=$((N - 1))
 done
 
-while [ ${BLANK_N} -ge 0  ]
-do
-    ROWS=$((ROWS / 2))
-
-    for ((i=0; i<${ROWS}; i++))
-    do
-        TREE="$(for ((i=0; i<${COLS}; i++)); do echo -n ${BLANK}; done)${LINE_BREAK}${TREE}"
+read n
+j=63
+len=16
+for ((i=1; i<=n; i++)) do
+    lim=$((${#roots[@]}-1))
+    elems=${#roots[@]}
+    old_j=$j
+    for((k=0; k<=lim; k++)) do
+        pos=${roots[$k]}
+        #print the trunk
+        for((m=0; m<=len-1; m++)) do
+            matrix[$j,$pos]='1'
+            ((j--))
+        done
+        #print the branches
+        for((m=1; m<=len; m++)) do
+            matrix[$j,$((pos-m))]='1'
+            matrix[$j,$((pos+m))]='1'
+            ((j--))
+        done
+        roots=("${roots[@]}" "$((pos-m+1))" "$((pos+m-1))" )
+        if (( $k < $lim ))
+        then
+            j=$old_j
+        fi
     done
-
-    BLANK_N=$((BLANK_N - 1))
+    for((k=0; k<$elems; k++)) do
+        unset roots[$k]
+    done
+    roots=( "${roots[@]}" )
+    len=$((len/2))
 done
 
-echo -e "$TREE"
+# print the matrix
+for ((i=1;i<=num_rows;i++)) do
+    for ((j=1;j<=num_columns;j++)) do
+        printf ${matrix[$i,$j]}
+    done
+    printf "\n"
+done
