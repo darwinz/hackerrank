@@ -1,5 +1,8 @@
 /*
-In this challenge, you must read an integer, a double, and a String from stdin, then print the values according to the instructions in the Output Format section below. To make the problem a little easier, a portion of the code is provided for you in the editor.
+In this challenge, you must read an integer, a double, and a String from stdin,
+then print the values according to the instructions in the Output Format
+section below. To make the problem a little easier, a portion of the code is
+provided for you in the editor.
 
 Note: We recommend completing Java Stdin and Stdout I before attempting this challenge.
 
@@ -20,7 +23,11 @@ There are three lines of output:
 3- On the third line, print Int: followed by the unaltered integer read from stdin.
 To make the problem easier, a portion of the code is already provided in the editor.
 
-Note: If you use the nextLine() method immediately following the nextInt() method, recall that nextInt() reads integer tokens; because of this, the last newline character for that line of integer input is still queued in the input buffer and the next nextLine() will be reading the remainder of the integer line (which is empty).
+Note: If you use the nextLine() method immediately following the nextInt()
+method, recall that nextInt() reads integer tokens; because of this, the last
+newline character for that line of integer input is still queued in the input
+buffer and the next nextLine() will be reading the remainder of the integer line
+(which is empty).
 
 Sample Input
 
