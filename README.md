@@ -3,6 +3,7 @@
 - Algorithms
 - Data Structures
 - Mathematics
+- Java
 - Python
 - Ruby
 - JavaScript
